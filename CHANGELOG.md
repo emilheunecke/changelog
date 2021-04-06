@@ -1,3 +1,9 @@
+## v0.1.3
+### Fixes
+- Fix typo
+
+### Changed
+- Change function names for consistency
 ## v0.1.2
 ### Changed
 - Change while loops for consistency
