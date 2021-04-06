@@ -6,7 +6,7 @@
 
 set -eu
 
-map_branch_commit_messages_to_commit_messages_by_tag_delta( {
+map_branch_commit_messages_to_commit_messages_by_tag_delta() {
 	local branch_commit_messages=$1
 	# echo $branch_commit_messages
 	if [ -z "${_commit_messages_by_tag_delta[$previous_tag:$current_tag]:-}" ] 
