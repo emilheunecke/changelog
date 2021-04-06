@@ -6,7 +6,7 @@
 
 set -eu
 
-map_branch_commit_messages_to_assoc_array() {
+map_branch_commit_messages_to_commit_messages_by_tag_delta( {
 	local branch_commit_messages=$1
 	# echo $branch_commit_messages
 	if [ -z "${_commit_messages_by_tag_delta[$previous_tag:$current_tag]:-}" ] 
@@ -23,12 +23,12 @@ get_branch_commit_messages_from_merge_commit_sha() {
 	echo "$branch_commits"
 }
 
-map_merge_commit_shas_branch_commit_messages_to_assoc_array() {
+map_merge_commit_shas_branch_commit_messages_to_commit_messages_by_tag_delta() {
 	local merge_commit_shas=$1
 	while read -r merge_commit_sha
 	do
 		branch_commit_messages=$(get_branch_commit_messages_from_merge_commit_sha $merge_commit_sha)
-		map_branch_commit_messages_to_assoc_array "$branch_commit_messages"
+		map_branch_commit_messages_to_commit_messages_by_tag_delta "$branch_commit_messages"
 	done <<< $merge_commit_shas
 }
 
@@ -44,7 +44,7 @@ get_tag_list() {
 	echo "$tag_list";
 }
 
-map_merged_branches_commit_messages_to_assoc_array() {
+map_merged_branches_commit_messages_to_commit_messages_by_tag_delta() {
 	local tag_list=$(get_tag_list)
 	local current_tag="HEAD"
 	while read -r previous_tag
@@ -58,14 +58,14 @@ map_merged_branches_commit_messages_to_assoc_array() {
 		merge_commit_shas=$(get_merge_commit_shas_between_tags $previous_tag $current_tag)
 		if [ -n "$merge_commit_shas" ]
 		then
-			map_merge_commit_shas_branch_commit_messages_to_assoc_array "$merge_commit_shas"
+			map_merge_commit_shas_branch_commit_messages_to_commit_messages_by_tag_delta "$merge_commit_shas"
 		fi
 		current_tag=$previous_tag
 	done <<< $tag_list
 }
 
 declare -A _commit_messages_by_tag_delta
-map_merged_branches_commit_messages_to_assoc_array
+map_merged_branches_commit_messages_to_commit_messages_by_tag_delta
 
 map_commit_message_to_changelog_messages() {
 	local _git_log_entry=$1
