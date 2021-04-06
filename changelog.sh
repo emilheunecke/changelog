@@ -25,10 +25,11 @@ get_branch_commit_messages_from_merge_commit_sha() {
 
 map_merge_commit_shas_branch_commit_messages_to_assoc_array() {
 	local merge_commit_shas=$1
-	while read -r merge_commit_sha; do
-    branch_commit_messages=$(get_branch_commit_messages_from_merge_commit_sha $merge_commit_sha)
+	while read -r merge_commit_sha
+	do
+		branch_commit_messages=$(get_branch_commit_messages_from_merge_commit_sha $merge_commit_sha)
 		map_branch_commit_messages_to_assoc_array "$branch_commit_messages"
-  done <<< $merge_commit_shas
+	done <<< $merge_commit_shas
 }
 
 get_merge_commit_shas_between_tags() {
@@ -46,7 +47,8 @@ get_tag_list() {
 map_merged_branches_commit_messages_to_assoc_array() {
 	local tag_list=$(get_tag_list)
 	local current_tag="HEAD"
-	while read -r previous_tag; do
+	while read -r previous_tag
+	do
 		tag_at_HEAD=$(git tag --points-at HEAD)
 		if [ $previous_tag = "$tag_at_HEAD" ]
 		then
@@ -54,10 +56,10 @@ map_merged_branches_commit_messages_to_assoc_array() {
 			continue
 		fi
 		merge_commit_shas=$(get_merge_commit_shas_between_tags $previous_tag $current_tag)
-    if [ -n "$merge_commit_shas" ]
-    then
-		  map_merge_commit_shas_branch_commit_messages_to_assoc_array "$merge_commit_shas"
-    fi
+		if [ -n "$merge_commit_shas" ]
+		then
+			map_merge_commit_shas_branch_commit_messages_to_assoc_array "$merge_commit_shas"
+		fi
 		current_tag=$previous_tag
 	done <<< $tag_list
 }
@@ -130,7 +132,7 @@ map_tag_delta_commit_messages_to_changelog_messages() {
 get_changelog_from_tag() {
 	tag=$1
 	tag_header="## $tag"
-  tag_changelog="$(cat <<-EOT
+	tag_changelog="$(cat <<-EOT
 ${tag_header}
 ${_git_security_entries:+${_git_security_entries}
 
@@ -150,17 +152,17 @@ ${_git_changed_entries:+${_git_changed_entries}
 ${_git_added_entries:-}
 		EOT
 	)"
-  echo "$tag_changelog"
+	echo "$tag_changelog"
 }
 
 reset_changelog_messages() {
-  _git_security_entries=""
-  _git_bugfix_entries=""
-  _git_removed_entries=""
-  _git_deprecated_entries=""
-  _git_changed_entries=""
-  _git_changed_entries=""
-  _git_added_entries=""	
+	_git_security_entries=""
+	_git_bugfix_entries=""
+	_git_removed_entries=""
+	_git_deprecated_entries=""
+	_git_changed_entries=""
+	_git_changed_entries=""
+	_git_added_entries=""	
 }
 
 generate_changelog() {
