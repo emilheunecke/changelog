@@ -54,7 +54,10 @@ map_merged_branches_commit_messages_to_assoc_array() {
 			continue
 		fi
 		merge_commit_shas=$(get_merge_commit_shas_between_tags $previous_tag $current_tag)
-		map_merge_commit_shas_branch_commit_messages_to_assoc_array "$merge_commit_shas"
+    if [ -n "$merge_commit_shas" ]
+    then
+		  map_merge_commit_shas_branch_commit_messages_to_assoc_array "$merge_commit_shas"
+    fi
 		current_tag=$previous_tag
 	done <<< $tag_list
 }
