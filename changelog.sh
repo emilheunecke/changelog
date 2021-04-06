@@ -25,8 +25,9 @@ get_branch_commit_messages_from_merge_commit_sha() {
 
 map_merge_commit_shas_branch_commit_messages_to_assoc_array() {
 	local merge_commit_shas=$1
-	while read -r merge_commit_sha; do
-	branch_commit_messages=$(get_branch_commit_messages_from_merge_commit_sha $merge_commit_sha)
+	while read -r merge_commit_sha
+	do
+		branch_commit_messages=$(get_branch_commit_messages_from_merge_commit_sha $merge_commit_sha)
 		map_branch_commit_messages_to_assoc_array "$branch_commit_messages"
 	done <<< $merge_commit_shas
 }
@@ -46,7 +47,8 @@ get_tag_list() {
 map_merged_branches_commit_messages_to_assoc_array() {
 	local tag_list=$(get_tag_list)
 	local current_tag="HEAD"
-	while read -r previous_tag; do
+	while read -r previous_tag
+	do
 		tag_at_HEAD=$(git tag --points-at HEAD)
 		if [ $previous_tag = "$tag_at_HEAD" ]
 		then
